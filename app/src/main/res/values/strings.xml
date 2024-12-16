@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Learning English</string>
+    <string name="ET_mail">E-mail</string>
+    <string name="ET_pass">Пароль</string>
+    <string name="ET_pass_rep">Повторите пароль</string>
+    <string name="B_open">Войти</string>
+    <string name="B_reg">Зарегистрироваться</string>
+    <string name="ET_log">Логин</string>
+    <string name="TV_forget_pass">Восстановить пароль</string>
+    <string name="title_activity_main">MainAct</string>
+    <string name="Profile">Профиль</string>
+    <string name="LessonsG">Грамматика</string>
+    <string name="LessonsL">Лексика</string>
+
+
+</resources>

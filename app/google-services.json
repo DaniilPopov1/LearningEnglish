@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "991476612564",
+    "firebase_url": "https://learning-english-f9449-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "learning-english-f9449",
+    "storage_bucket": "learning-english-f9449.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991476612564:android:7b8449829a59959be9ea41",
+        "android_client_info": {
+          "package_name": "com.example.learningenglish"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6Ik-mv-UDs5DLDaJiXFKfs8sEwEJ4S24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
