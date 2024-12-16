@@ -1,9 +1,14 @@
 package com.example.learningenglish.Grammar
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
+import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -16,6 +21,10 @@ class ActivityGrammExer : AppCompatActivity() {
 
     val exerciseList = mutableListOf<Exercise>()
 
+    private var currentExerciseIndex = 0 // Индекс текущего упражнения
+    private var correctAnswersCount = 0 // Количество правильных ответов
+    private var totalAnswersCount = 0 // Общее количество вопросов
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,40 +35,129 @@ class ActivityGrammExer : AppCompatActivity() {
             insets
         }
 
+        // Загружаем данные упражнений
+        val idLes = intent.getIntExtra("lessonID", 0)
         val database = FirebaseDatabase.getInstance()
         val exerciseRef = database.getReference("Exercise")
         exerciseRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val snapshot = task.result
                 if (snapshot != null && snapshot.exists()) {
-                    // Перебираем всех пользователей
+                    // Перебираем упражнения и добавляем в список
                     for (exerciseSnapshot in snapshot.children) {
                         val ExerciseId = exerciseSnapshot.key?.toInt() ?: continue
-                        val LessonsId = exerciseSnapshot.child("LessonsID").getValue(Int::class.java) ?: 0
-                        val Question = exerciseSnapshot.child("Question").getValue(String::class.java) ?: "Unknown"
-                        val AnswerOptions1 = exerciseSnapshot.child("AnswerOptions1").getValue(String::class.java) ?: "Unknown"
-                        val AnswerOptions2 = exerciseSnapshot.child("AnswerOptions2").getValue(String::class.java) ?: "Unknown"
-                        val AnswerOptions3 = exerciseSnapshot.child("AnswerOptions3").getValue(String::class.java) ?: "Unknown"
-                        val AnswerOptions4 = exerciseSnapshot.child("AnswerOptions4").getValue(String::class.java) ?: "Unknown"
-                        val CorrectAnswer = exerciseSnapshot.child("CorrectAnswer").getValue(String::class.java) ?: "Unknown"
-                        // Создаём объект User и добавляем в список
-                        val exercise = Exercise(ExerciseId = ExerciseId,
-                            LessonsId = LessonsId,
-                            Question = Question,
-                            AnswerOptions1 = AnswerOptions1,
-                            AnswerOptions2 = AnswerOptions2,
-                            AnswerOptions3 = AnswerOptions3,
-                            AnswerOptions4 = AnswerOptions4,
-                            CorrectAnswer = CorrectAnswer)
-                        exerciseList.add(exercise)
+                        val LessonsId =
+                            exerciseSnapshot.child("LessonsID").getValue(Int::class.java) ?: 0
+                        val Question =
+                            exerciseSnapshot.child("Question").getValue(String::class.java)
+                                ?: "Unknown"
+                        val AnswerOptions1 =
+                            exerciseSnapshot.child("AnswerOptions1").getValue(String::class.java)
+                                ?: "Unknown"
+                        val AnswerOptions2 =
+                            exerciseSnapshot.child("AnswerOptions2").getValue(String::class.java)
+                                ?: "Unknown"
+                        val AnswerOptions3 =
+                            exerciseSnapshot.child("AnswerOptions3").getValue(String::class.java)
+                                ?: "Unknown"
+                        val AnswerOptions4 =
+                            exerciseSnapshot.child("AnswerOptions4").getValue(String::class.java)
+                                ?: "Unknown"
+                        val CorrectAnswer =
+                            exerciseSnapshot.child("CorrectAnswer").getValue(String::class.java)
+                                ?: "Unknown"
+
+                        val exercise = Exercise(
+                            ExerciseId,
+                            LessonsId,
+                            Question,
+                            AnswerOptions1,
+                            AnswerOptions2,
+                            AnswerOptions3,
+                            AnswerOptions4,
+                            CorrectAnswer
+                        )
+                        if (exercise.LessonsId == idLes) {
+                            exerciseList.add(exercise)
+                        }
                     }
                 }
             }
+
+            // После загрузки данных, выводим первое упражнение
+            if (exerciseList.isNotEmpty()) {
+                displayExercise(exerciseList[currentExerciseIndex])
+            } else {
+                Toast.makeText(this, "Нет упражнений для этого урока", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        val exr = findViewById<TextView>(R.id.questionText)
+        val checkButton = findViewById<Button>(R.id.checkButton)
+        val nextQuestionButton = findViewById<Button>(R.id.nextQuestionButton)
 
+        // Слушатель для кнопки "Проверить"
+        checkButton.setOnClickListener {
+            checkAnswer()
+        }
 
-
+        // Кнопка "Следующий вопрос", скрыта до ответа
+        nextQuestionButton.isEnabled = false
+        nextQuestionButton.setOnClickListener {
+            loadNextQuestion()
+        }
     }
+
+    private fun displayExercise(exercise: Exercise) {
+        // Заполнение UI данными из текущего упражнения
+        findViewById<TextView>(R.id.exerciseNumber).text = "Упражнение ${exercise.ExerciseId}"
+        findViewById<TextView>(R.id.questionText).text = exercise.Question
+        findViewById<RadioButton>(R.id.answerOption1).text = exercise.AnswerOptions1
+        findViewById<RadioButton>(R.id.answerOption2).text = exercise.AnswerOptions2
+        findViewById<RadioButton>(R.id.answerOption3).text = exercise.AnswerOptions3
+        findViewById<RadioButton>(R.id.answerOption4).text = exercise.AnswerOptions4
+    }
+
+    private fun checkAnswer() {
+        val selectedAnswer = findViewById<RadioGroup>(R.id.answersRadioGroup)
+            .checkedRadioButtonId
+        val correctAnswer = exerciseList[currentExerciseIndex].CorrectAnswer
+
+        // Проверка правильности ответа
+        val answerText = findViewById<RadioButton>(selectedAnswer)?.text.toString()
+        if (answerText == correctAnswer) {
+            correctAnswersCount++
+            Toast.makeText(this, "Правильный ответ!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Неправильный ответ.", Toast.LENGTH_SHORT).show()
+        }
+
+        totalAnswersCount++
+
+        // Сделать кнопки проверки и смены ответа недоступными
+        findViewById<Button>(R.id.checkButton).isEnabled = false
+        findViewById<RadioGroup>(R.id.answersRadioGroup).isEnabled = false
+
+        // Сделать кнопку "Следующий вопрос" доступной
+        findViewById<Button>(R.id.nextQuestionButton).isEnabled = true
+    }
+
+    private fun loadNextQuestion() {
+        if (currentExerciseIndex < exerciseList.size - 1) {
+            currentExerciseIndex++
+            displayExercise(exerciseList[currentExerciseIndex])
+
+            // Сделать кнопки доступными для следующего вопроса
+            findViewById<Button>(R.id.checkButton).isEnabled = true
+            findViewById<RadioGroup>(R.id.answersRadioGroup).isEnabled = true
+            findViewById<Button>(R.id.nextQuestionButton).isEnabled = false
+        } else {
+            // Переход к результатам, если вопросы закончились
+            val intent = Intent(this, ResultsActivity::class.java)
+            intent.putExtra("correctAnswers", correctAnswersCount)
+            intent.putExtra("totalAnswers", totalAnswersCount)
+            startActivity(intent)
+            finish()
+        }
+    }
+
 }

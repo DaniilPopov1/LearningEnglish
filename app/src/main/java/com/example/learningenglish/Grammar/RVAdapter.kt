@@ -39,7 +39,10 @@ class RVHolder(private val view: View): RecyclerView.ViewHolder(view){
         textView1.text = lesson.Theme
         view.setOnClickListener{
             Log.i("Click", lesson.Title.toString())
-            val intent = Intent(view.context, ActivityGrammExer::class.java)
+            val intent = Intent(view.context, ActivityGrammTh::class.java).apply {
+                putExtra("lessonID",lesson.LessonId)
+                putExtra("lessonTheme",lesson.Theme)
+            }
             view.context.startActivity(intent)
         }
     }
