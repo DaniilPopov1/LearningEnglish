@@ -1,4 +1,4 @@
-package com.example.learningenglish.Grammar
+package com.example.learningenglish.Vocabular
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -11,7 +11,7 @@ import com.example.learningenglish.R
 import com.example.learningenglish.dataClasses.Lessons
 import com.google.firebase.database.FirebaseDatabase
 
-class ActivityGrammar : AppCompatActivity() {
+class ActivityVocabular : AppCompatActivity() {
 
     val lessonList = mutableListOf<Lessons>()
 
@@ -21,15 +21,15 @@ class ActivityGrammar : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_grammar)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.h)) { v, insets ->
+        setContentView(R.layout.activity_vocabular)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.hh)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
         val database = FirebaseDatabase.getInstance()
-        val lessonsRef = database.getReference("lessonsG")
+        val lessonsRef = database.getReference("lessonsV")
 
         lessonsRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {

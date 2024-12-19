@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.learningenglish.R
-import com.example.learningenglish.dataClsses.Users
+import com.example.learningenglish.dataClasses.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
@@ -75,7 +75,9 @@ class fragment_registration : Fragment() {
                 auth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener{
                     if(it.isSuccessful){
                         val database=database.reference.child("users").child(auth.currentUser!!.uid)
-                        val users: Users = Users(login, email, auth.currentUser!!.uid)
+                        val correctAnswer = 0
+                        val wrongAnswer = 0
+                        val users: Users = Users(login, email, auth.currentUser!!.uid, correctAnswer,wrongAnswer)
                         database.setValue(users).addOnCompleteListener{
                             if(it.isSuccessful){
                                 Toast.makeText(

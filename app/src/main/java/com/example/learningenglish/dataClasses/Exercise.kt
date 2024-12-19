@@ -1,4 +1,4 @@
-package com.example.learningenglish.dataClsses
+package com.example.learningenglish.dataClasses
 
 data class Exercise(
     val ExerciseId:Int?=null,

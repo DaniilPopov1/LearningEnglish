@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.learningenglish.Grammar.ActivityGrammar
+import com.example.learningenglish.Vocabular.ActivityVocabular
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +32,11 @@ class MainActivity : AppCompatActivity() {
         val ButGramm = findViewById<Button>(R.id.buttonGrammarLessons)
         ButGramm.setOnClickListener{
             val intent = Intent(this, ActivityGrammar::class.java)
+            startActivity(intent)
+        }
+        val ButVoc = findViewById<Button>(R.id.buttonLexicalLessons)
+        ButVoc.setOnClickListener{
+            val intent = Intent(this, ActivityVocabular::class.java)
             startActivity(intent)
         }
     }

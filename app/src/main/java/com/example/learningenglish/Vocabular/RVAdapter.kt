@@ -1,4 +1,4 @@
-package com.example.learningenglish.Grammar
+package com.example.learningenglish.Vocabular
 
 import android.content.Intent
 import android.util.Log
@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.learningenglish.R
+import com.example.learningenglish.Vocabular.ActivityVocabular
+import com.example.learningenglish.Vocabular.ActivityVocabularTh
 import com.example.learningenglish.dataClasses.Lessons
 
 
@@ -38,7 +40,7 @@ class RVHolder(private val view: View): RecyclerView.ViewHolder(view){
         textView1.text = lesson.Theme
         view.setOnClickListener{
             Log.i("Click", lesson.Title.toString())
-            val intent = Intent(view.context, ActivityGrammTh::class.java).apply {
+            val intent = Intent(view.context, ActivityVocabularTh::class.java).apply {
                 putExtra("lessonID",lesson.LessonId)
                 putExtra("lessonTheme",lesson.Theme)
             }

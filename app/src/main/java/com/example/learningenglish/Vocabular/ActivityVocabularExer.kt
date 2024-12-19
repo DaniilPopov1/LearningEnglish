@@ -1,4 +1,4 @@
-package com.example.learningenglish.Grammar
+package com.example.learningenglish.Vocabular
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,7 +15,7 @@ import com.example.learningenglish.R
 import com.example.learningenglish.dataClasses.Exercise
 import com.google.firebase.database.FirebaseDatabase
 
-class ActivityGrammExer : AppCompatActivity() {
+class ActivityVocabularExer : AppCompatActivity() {
 
     val exerciseList = mutableListOf<Exercise>()
 
@@ -26,7 +26,7 @@ class ActivityGrammExer : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_gramm_exer)
+        setContentView(R.layout.activity_vocabular_exer)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -39,7 +39,7 @@ class ActivityGrammExer : AppCompatActivity() {
         // Загружаем данные упражнений
         val idLes = intent.getIntExtra("lessonID", 0)
         val database = FirebaseDatabase.getInstance()
-        val exerciseRef = database.getReference("ExerciseG")
+        val exerciseRef = database.getReference("ExerciseV")
         exerciseRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val snapshot = task.result

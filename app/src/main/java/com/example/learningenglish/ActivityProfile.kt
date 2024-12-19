@@ -25,6 +25,8 @@ class ActivityProfile : AppCompatActivity() {
         val userUID = sharedPreferences.getString("userUID", null)
         val loginTV = findViewById<TextView>(R.id.textViewLogin)
         val emailTV = findViewById<TextView>(R.id.textViewEmail)
+        val corTV = findViewById<TextView>(R.id.textViewCorA)
+        val wrongTV = findViewById<TextView>(R.id.textViewWrongA)
         val exitBut = findViewById<Button>(R.id.buttonLogout)
 
         val database = FirebaseDatabase.getInstance()
@@ -37,12 +39,19 @@ class ActivityProfile : AppCompatActivity() {
                     loginTV.setText(userName)
                     val userEmail = userData["email"] as? String ?: "Unknown"
                     emailTV.setText(userEmail)
+                    val userCorA = userData["correctAnswer"]
+                    corTV.setText(userCorA.toString())
+                    val userWrongA = userData["wrongAnswer"]
+                    wrongTV.setText(userWrongA.toString())
+
                 }
             }
         }
         exitBut.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
+            finish() // Завершает текущую активити
         }
     }
 }

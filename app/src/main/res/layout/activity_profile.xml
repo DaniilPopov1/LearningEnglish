@@ -78,7 +78,45 @@
                 android:text=""
                 android:textSize="18sp"
                 android:textColor="@color/black"
-                android:paddingTop="4dp" />
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"/>
+
+            <!-- Статистика -->
+            <TextView
+                android:id="@+id/labelCorA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Количество правильных ответов:"
+                android:textSize="16sp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/textViewCorA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/labelWrongA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Количество неправильных ответов:"
+                android:textSize="16sp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/textViewWrongA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"/>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
