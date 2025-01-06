@@ -7,8 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.learningenglish.Av_Reg.ActivityRegAuth
 import com.example.learningenglish.Grammar.ActivityGrammar
 import com.example.learningenglish.Vocabular.ActivityVocabular
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +40,19 @@ class MainActivity : AppCompatActivity() {
         ButVoc.setOnClickListener{
             val intent = Intent(this, ActivityVocabular::class.java)
             startActivity(intent)
+        }
+        val ButClose = findViewById<Button>(R.id.buttonClose)
+        ButClose.setOnClickListener {
+            val auth = FirebaseAuth.getInstance() // Получаем экземпляр FirebaseAuth
+            auth.signOut() // Разлогиниваем пользователя
+
+            val sharedPreferences = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+            sharedPreferences.edit().remove("userUID").apply()
+
+            val intent = Intent(this, ActivityRegAuth::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            finish() // Завершает текущую активити
         }
     }
 }

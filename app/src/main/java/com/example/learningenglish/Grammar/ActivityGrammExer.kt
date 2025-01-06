@@ -83,6 +83,7 @@ class ActivityGrammExer : AppCompatActivity() {
                         }
                     }
                 }
+                exerciseList.shuffle()
             }
 
             // После загрузки данных, выводим первое упражнение
@@ -102,15 +103,19 @@ class ActivityGrammExer : AppCompatActivity() {
         }
 
         // Кнопка "Следующий вопрос", скрыта до ответа
-        nextQuestionButton.isEnabled = false
         nextQuestionButton.setOnClickListener {
-            loadNextQuestion()
+            if (checkButton.isEnabled == true){
+                Toast.makeText(this, "Выберите и проверьте ответ", Toast.LENGTH_SHORT).show()
+            }else{
+                loadNextQuestion()
+            }
         }
     }
 
     private fun displayExercise(exercise: Exercise) {
+        val exerciseNumber = currentExerciseIndex + 1
         // Заполнение UI данными из текущего упражнения
-        findViewById<TextView>(R.id.exerciseNumber).text = "Упражнение ${exercise.ExerciseId}"
+        findViewById<TextView>(R.id.exerciseNumber).text = "Упражнение $exerciseNumber"
         findViewById<TextView>(R.id.questionText).text = exercise.Question
         findViewById<RadioButton>(R.id.answerOption1).text = exercise.AnswerOptions1
         findViewById<RadioButton>(R.id.answerOption2).text = exercise.AnswerOptions2

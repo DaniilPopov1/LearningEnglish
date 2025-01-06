@@ -38,12 +38,14 @@ class ActivityVocabular : AppCompatActivity() {
                     // Перебираем всех пользователей
                     for (lessonsSnapshot in snapshot.children) {
                         val LessonId = lessonsSnapshot.key?.toInt() ?: continue
-                        val Title = lessonsSnapshot.child("Title").getValue(String::class.java) ?: "Unknown"
-                        val Theme = lessonsSnapshot.child("Theme").getValue(String::class.java) ?: "Unknown"
+                        val Title = lessonsSnapshot.child("Title").getValue(String::class.java) ?: lessonsSnapshot.child("Title").value?.toString() ?: "Unknown"
+                        val Theme = lessonsSnapshot.child("Theme").getValue(String::class.java) ?: lessonsSnapshot.child("Theme").value?.toString() ?: "Unknown"
+                        val Theory = lessonsSnapshot.child("Theory").getValue(String::class.java) ?: lessonsSnapshot.child("Theory").value?.toString() ?: "Unknown"
 
                         val lesson = Lessons(LessonId = LessonId,
                             Title = Title,
-                            Theme = Theme)
+                            Theme = Theme,
+                            Theory = Theory)
                         lessonList.add(lesson)
                     }
                     (mRecyclerView.adapter as RVAdapter).notifyDataSetChanged()

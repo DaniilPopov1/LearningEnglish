@@ -47,20 +47,19 @@ class fragment_registration : Fragment() {
             val pass = ET_pass.text.toString()
             val repPass = ET_pass_rep.text.toString()
             if (login.isEmpty() || email.isEmpty() || pass.isEmpty() || repPass.isEmpty()) {
-                if (login.isEmpty()){
-                    ET_log.error="Введите логин"
+                if (login.isEmpty()) {
+                    ET_log.error = "Введите логин"
                 }
-                if (email.isEmpty()){
-                    ET_mail.error="Введите email"
+                if (email.isEmpty()) {
+                    ET_mail.error = "Введите email"
                 }
-                if (pass.isEmpty()){
-                    ET_pass.error="Введите пароль"
+                if (pass.isEmpty()) {
+                    ET_pass.error = "Введите пароль"
                 }
-                if (repPass.isEmpty()){
-                    ET_pass_rep.error="Повторите пароль"
+                if (repPass.isEmpty()) {
+                    ET_pass_rep.error = "Повторите пароль"
                 }
-            }
-            else if (!email.matches(emailPattern.toRegex()) || pass.length < 8 || pass != repPass) {
+            } else if (!email.matches(emailPattern.toRegex()) || pass.length < 8 || pass != repPass) {
                 if (!email.matches(emailPattern.toRegex())) {
                     ET_mail.error = "Не корректный email"
                 }
@@ -70,32 +69,45 @@ class fragment_registration : Fragment() {
                 if (pass != repPass) {
                     ET_pass_rep.error = "Пароли не совпадают"
                 }
-            }
-            else{
-                auth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener{
-                    if(it.isSuccessful){
-                        val database=database.reference.child("users").child(auth.currentUser!!.uid)
-                        val correctAnswer = 0
-                        val wrongAnswer = 0
-                        val users: Users = Users(login, email, auth.currentUser!!.uid, correctAnswer,wrongAnswer)
-                        database.setValue(users).addOnCompleteListener{
-                            if(it.isSuccessful){
+            } else {
+                auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // Отправляем письмо для подтверждения email
+                        val user = auth.currentUser
+                        user?.sendEmailVerification()?.addOnCompleteListener { verificationTask ->
+                            if (verificationTask.isSuccessful) {
+                                // Добавляем данные пользователя в базу только после успешной регистрации
+                                val database = database.reference.child("users").child(user.uid)
+                                val correctAnswer = 0
+                                val wrongAnswer = 0
+                                val users =
+                                    Users(login, email, user.uid, correctAnswer, wrongAnswer)
+                                database.setValue(users).addOnCompleteListener { dbTask ->
+                                    if (dbTask.isSuccessful) {
+                                        Toast.makeText(
+                                            inflater.context,
+                                            "Вы успешно зарегистрированы. Проверьте свою почту для подтверждения",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    } else {
+                                        Toast.makeText(
+                                            inflater.context,
+                                            "Ошибка сохранения данных. Попробуйте снова",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
+                            } else {
+                                // Ошибка при отправке письма
                                 Toast.makeText(
                                     inflater.context,
-                                    "Вы успешно зарегистрированны",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                            else{
-                                Toast.makeText(
-                                    inflater.context,
-                                    "Что-то пошло не так, попробуйте снова",
+                                    "Ошибка при отправке письма подтверждения. Попробуйте снова",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
                         }
-                    }
-                    else{
+                    } else {
+                        // Обработка ошибки регистрации
                         Toast.makeText(
                             inflater.context,
                             "Пользователь с такими данными уже существует",
@@ -103,9 +115,9 @@ class fragment_registration : Fragment() {
                         ).show()
                     }
                 }
+
             }
         }
-
         return view
     }
 }

@@ -1,7 +1,9 @@
 package com.example.learningenglish.Grammar
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -24,9 +26,17 @@ class ActivityGrammTh : AppCompatActivity() {
         }
         val nameLes = intent.getStringExtra("lessonTheme")
         val idLes = intent.getIntExtra("lessonID",0)
+        val th = intent.getStringExtra("theoryLesson")
 
         val nameLesson = findViewById<TextView>(R.id.tvLessonTitle)
         nameLesson.text = nameLes
+
+        val Theory = findViewById<TextView>(R.id.tvLessonContent)
+        Theory.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(th, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(th)
+        }
 
         val butEx = findViewById<Button>(R.id.btnStartExercise)
         butEx.setOnClickListener{

@@ -43,6 +43,7 @@ class RVHolder(private val view: View): RecyclerView.ViewHolder(view){
             val intent = Intent(view.context, ActivityVocabularTh::class.java).apply {
                 putExtra("lessonID",lesson.LessonId)
                 putExtra("lessonTheme",lesson.Theme)
+                putExtra("theoryLesson",lesson.Theory)
             }
             view.context.startActivity(intent)
         }
