@@ -62,13 +62,11 @@ class fragment_authorization : Fragment() {
                         if (currentUser!=null && currentUser.isEmailVerified){
                             val userId = currentUser?.uid
 
-                            // Сохранение в SharedPreferences
                             val sharedPreferences = requireActivity().getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
                             val editor = sharedPreferences.edit()
                             editor.putString("userUID", userId)
                             editor.apply()
 
-                            // Переход в MainActivity
                             val intent = Intent(view.context, MainActivity::class.java)
                             startActivity(intent)
                         }else{
@@ -143,11 +141,9 @@ class fragment_authorization : Fragment() {
             if (task.isSuccessful) {
                 val snapshot = task.result
                 if (snapshot != null && snapshot.exists()) {
-                    // Перебираем всех пользователей
                     for (lessonsSnapshot in snapshot.children) {
                         val em = lessonsSnapshot.child("email").getValue(String::class.java) ?: lessonsSnapshot.child("email").value?.toString() ?: "Unknown"
                         if (em == emailToCheck) {
-                            // Если email найден, отправляем письмо
                             auth.sendPasswordResetEmail(emailToCheck)
                                 .addOnCompleteListener { resetTask ->
                                     if (resetTask.isSuccessful) {
@@ -165,7 +161,6 @@ class fragment_authorization : Fragment() {
                                     }
                                 }
                         } else {
-                            // Email не найден в базе
                             Toast.makeText(
                                 requireContext(),
                                 "Пользователь с таким email не найден",

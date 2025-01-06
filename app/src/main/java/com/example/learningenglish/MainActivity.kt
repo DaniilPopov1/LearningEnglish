@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity() {
         }
         val ButClose = findViewById<Button>(R.id.buttonClose)
         ButClose.setOnClickListener {
-            val auth = FirebaseAuth.getInstance() // Получаем экземпляр FirebaseAuth
-            auth.signOut() // Разлогиниваем пользователя
+            val auth = FirebaseAuth.getInstance()
+            auth.signOut()
 
             val sharedPreferences = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
             sharedPreferences.edit().remove("userUID").apply()
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ActivityRegAuth::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
-            finish() // Завершает текущую активити
+            finish()
         }
     }
 }

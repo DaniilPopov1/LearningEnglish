@@ -60,7 +60,10 @@ class ActivityVocabular : AppCompatActivity() {
         mLayoutManager = LinearLayoutManager(this.applicationContext)
         mRecyclerView.layoutManager = mLayoutManager
 
-        val mAdapter = RVAdapter(lessonList)
+        val sharedPreferences = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        val userUID = sharedPreferences.getString("userUID", null)
+
+        val mAdapter = RVAdapter(lessonList, userUID!!)
         mRecyclerView.adapter = mAdapter
     }
 }

@@ -19,9 +19,9 @@ class ActivityVocabularExer : AppCompatActivity() {
 
     val exerciseList = mutableListOf<Exercise>()
 
-    private var currentExerciseIndex = 0 // Индекс текущего упражнения
-    private var correctAnswersCount = 0 // Количество правильных ответов
-    private var totalAnswersCount = 0 // Общее количество вопросов
+    private var currentExerciseIndex = 0
+    private var correctAnswersCount = 0
+    private var totalAnswersCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +36,6 @@ class ActivityVocabularExer : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
         val userUID = sharedPreferences.getString("userUID", null)
 
-        // Загружаем данные упражнений
         val idLes = intent.getIntExtra("lessonID", 0)
         val database = FirebaseDatabase.getInstance()
         val exerciseRef = database.getReference("ExerciseV")
@@ -44,7 +43,6 @@ class ActivityVocabularExer : AppCompatActivity() {
             if (task.isSuccessful) {
                 val snapshot = task.result
                 if (snapshot != null && snapshot.exists()) {
-                    // Перебираем упражнения и добавляем в список
                     for (exerciseSnapshot in snapshot.children) {
                         val ExerciseId = exerciseSnapshot.key?.toInt() ?: continue
                         val LessonsId =
@@ -86,7 +84,6 @@ class ActivityVocabularExer : AppCompatActivity() {
                 exerciseList.shuffle()
             }
 
-            // После загрузки данных, выводим первое упражнение
             if (exerciseList.isNotEmpty()) {
                 displayExercise(exerciseList[currentExerciseIndex])
             } else {
@@ -97,24 +94,27 @@ class ActivityVocabularExer : AppCompatActivity() {
         val checkButton = findViewById<Button>(R.id.checkButton)
         val nextQuestionButton = findViewById<Button>(R.id.nextQuestionButton)
 
-        // Слушатель для кнопки "Проверить"
         checkButton.setOnClickListener {
-            checkAnswer(userUID)
+            val selectedId = findViewById<RadioGroup>(R.id.answersRadioGroup).checkedRadioButtonId
+            if (selectedId != -1) {
+                checkAnswer(userUID)
+            } else {
+                Toast.makeText(this, "Выберите ответ", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        // Кнопка "Следующий вопрос", скрыта до ответа
         nextQuestionButton.setOnClickListener {
             if (checkButton.isEnabled == true){
                 Toast.makeText(this, "Выберите и проверьте ответ", Toast.LENGTH_SHORT).show()
             }else{
-                loadNextQuestion()
+                loadNextQuestion(idLes)
             }
         }
     }
 
     private fun displayExercise(exercise: Exercise) {
         val exerciseNumber = currentExerciseIndex + 1
-        // Заполнение UI данными из текущего упражнения
+
         findViewById<TextView>(R.id.exerciseNumber).text = "Упражнение $exerciseNumber"
         findViewById<TextView>(R.id.questionText).text = exercise.Question
         findViewById<RadioButton>(R.id.answerOption1).text = exercise.AnswerOptions1
@@ -128,7 +128,6 @@ class ActivityVocabularExer : AppCompatActivity() {
             .checkedRadioButtonId
         val correctAnswer = exerciseList[currentExerciseIndex].CorrectAnswer
 
-        // Проверка правильности ответа
         val answerText = findViewById<RadioButton>(selectedAnswer)?.text.toString()
         if (answerText == correctAnswer) {
             correctAnswersCount++
@@ -159,28 +158,23 @@ class ActivityVocabularExer : AppCompatActivity() {
 
         totalAnswersCount++
 
-        // Сделать кнопки проверки и смены ответа недоступными
         findViewById<Button>(R.id.checkButton).isEnabled = false
-        findViewById<RadioGroup>(R.id.answersRadioGroup).isEnabled = false
 
-        // Сделать кнопку "Следующий вопрос" доступной
         findViewById<Button>(R.id.nextQuestionButton).isEnabled = true
     }
 
-    private fun loadNextQuestion() {
+    private fun loadNextQuestion(idLes: Int?) {
         if (currentExerciseIndex < exerciseList.size - 1) {
             currentExerciseIndex++
             displayExercise(exerciseList[currentExerciseIndex])
 
-            // Сделать кнопки доступными для следующего вопроса
             findViewById<Button>(R.id.checkButton).isEnabled = true
-            findViewById<RadioGroup>(R.id.answersRadioGroup).isEnabled = true
-            findViewById<Button>(R.id.nextQuestionButton).isEnabled = false
+            findViewById<RadioGroup>(R.id.answersRadioGroup).clearCheck()
         } else {
-            // Переход к результатам, если вопросы закончились
             val intent = Intent(this, ResultsActivity::class.java)
             intent.putExtra("correctAnswers", correctAnswersCount)
             intent.putExtra("totalAnswers", totalAnswersCount)
+            intent.putExtra("lessonID",idLes)
             startActivity(intent)
             finish()
         }

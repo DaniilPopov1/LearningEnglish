@@ -98,7 +98,6 @@ class fragment_registration : Fragment() {
                                     }
                                 }
                             } else {
-                                // Ошибка при отправке письма
                                 Toast.makeText(
                                     inflater.context,
                                     "Ошибка при отправке письма подтверждения. Попробуйте снова",
@@ -107,7 +106,6 @@ class fragment_registration : Fragment() {
                             }
                         }
                     } else {
-                        // Обработка ошибки регистрации
                         Toast.makeText(
                             inflater.context,
                             "Пользователь с такими данными уже существует",

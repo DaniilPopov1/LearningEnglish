@@ -35,7 +35,6 @@ class ActivityGrammar : AppCompatActivity() {
             if (task.isSuccessful) {
                 val snapshot = task.result
                 if (snapshot != null && snapshot.exists()) {
-                    // Перебираем всех пользователей
                     for (lessonsSnapshot in snapshot.children) {
                         val LessonId = lessonsSnapshot.key?.toInt() ?: continue
                         val Title = lessonsSnapshot.child("Title").getValue(String::class.java) ?: lessonsSnapshot.child("Title").value?.toString() ?: "Unknown"
@@ -60,7 +59,10 @@ class ActivityGrammar : AppCompatActivity() {
         mLayoutManager = LinearLayoutManager(this.applicationContext)
         mRecyclerView.layoutManager = mLayoutManager
 
-        val mAdapter = RVAdapter(lessonList)
+        val sharedPreferences = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+        val userUID = sharedPreferences.getString("userUID", null)
+
+        val mAdapter = RVAdapter(lessonList, userUID!!)
         mRecyclerView.adapter = mAdapter
     }
 }
