@@ -33,11 +33,6 @@ class fragment_registration : Fragment() {
         val ET_pass_rep = view.findViewById<EditText>(R.id.editTextPasswordRep)
         val Button = view.findViewById<Button>(R.id.button)
 
-        val login = ET_log.text.toString()
-        val email = ET_mail.text.toString()
-        val pass = ET_pass.text.toString()
-        val repPass = ET_pass_rep.text.toString()
-
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
 

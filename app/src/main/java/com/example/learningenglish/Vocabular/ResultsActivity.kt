@@ -24,10 +24,6 @@ class ResultsActivity : AppCompatActivity() {
         val totalAnswers = intent.getIntExtra("totalAnswers", 0)
         val percentage = (correctAnswers / totalAnswers.toFloat()) * 100
 
-
-
-        findViewById<TextView>(R.id.resultText).text = "Правильных ответов: $correctAnswers/$totalAnswers\nПроцент выполнения: %.2f".format(percentage)
-
         val idLes = intent.getIntExtra("lessonID", 0)
         val sharedPreferences = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
         val userUID = sharedPreferences.getString("userUID", null)
@@ -40,24 +36,52 @@ class ResultsActivity : AppCompatActivity() {
             else -> "Неизвестно"
         }
 
+        findViewById<TextView>(R.id.resultText).text = ("Правильных ответов: $correctAnswers/$totalAnswers\n" +
+                "Процент выполнения: $percentage\n" + "Оценка: $result")
+
         val database = FirebaseDatabase.getInstance().reference
 
         if (userUID != null) {
             val progressRef = database.child("progress").child(userUID).child("vocabular").child(idLes.toString())
 
-            val progressData = mapOf(
-                "lessonID" to idLes,
-                "result" to result,
-                "percentage" to percentage
-            )
+            progressRef.get().addOnSuccessListener { snapshot ->
+                val existingResult = snapshot.child("result").value as? String
 
-            progressRef.setValue(progressData)
-                .addOnSuccessListener {
-                    Log.d("Firebase", "Запись успешно добавлена/обновлена")
+                // Определение порядка приоритета оценок
+                val priorities = mapOf(
+                    "Провалено" to 1,
+                    "Удовлетворительно" to 2,
+                    "Хорошо" to 3,
+                    "Отлично" to 4
+                )
+
+                // Сравнение текущей и новой оценки
+                val newResult = if (existingResult != null) {
+                    val currentPriority = priorities[existingResult] ?: 0
+                    val newPriority = priorities[result] ?: 0
+                    if (newPriority > currentPriority) result else existingResult
+                } else {
+                    result // Если записи ещё нет, сохраняем новую
                 }
-                .addOnFailureListener { e ->
-                    Log.e("Firebase", "Ошибка добавления записи", e)
-                }
+
+                // Данные для сохранения
+                val progressData = mapOf(
+                    "lessonID" to idLes,
+                    "result" to newResult,
+                    "percentage" to percentage
+                )
+
+                // Сохранение данных в базу
+                progressRef.setValue(progressData)
+                    .addOnSuccessListener {
+                        Log.d("Firebase", "Запись успешно добавлена/обновлена")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("Firebase", "Ошибка добавления записи", e)
+                    }
+            }.addOnFailureListener { e ->
+                Log.e("Firebase", "Ошибка чтения данных", e)
+            }
         } else {
             Log.e("Firebase", "Ошибка: userUID равен null")
         }
