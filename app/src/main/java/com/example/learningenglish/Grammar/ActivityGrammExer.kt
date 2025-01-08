@@ -47,7 +47,7 @@ class ActivityGrammExer : AppCompatActivity() {
                         val ExerciseId = exerciseSnapshot.key?.toInt() ?: continue
                         val LessonsId =
                             exerciseSnapshot.child("LessonsID").getValue(Int::class.java) ?: 0
-                        val Question =
+                        val Question1 =
                             exerciseSnapshot.child("Question").getValue(String::class.java)
                                 ?: "Unknown"
                         val AnswerOptions1 =
@@ -69,7 +69,8 @@ class ActivityGrammExer : AppCompatActivity() {
                         val exercise = Exercise(
                             ExerciseId,
                             LessonsId,
-                            Question,
+                            Question1,
+                            "",
                             AnswerOptions1,
                             AnswerOptions2,
                             AnswerOptions3,
@@ -116,7 +117,7 @@ class ActivityGrammExer : AppCompatActivity() {
         val exerciseNumber = currentExerciseIndex + 1
 
         findViewById<TextView>(R.id.exerciseNumber).text = "Упражнение $exerciseNumber"
-        findViewById<TextView>(R.id.questionText).text = exercise.Question
+        findViewById<TextView>(R.id.questionText).text = exercise.Question1
         findViewById<RadioButton>(R.id.answerOption1).text = exercise.AnswerOptions1
         findViewById<RadioButton>(R.id.answerOption2).text = exercise.AnswerOptions2
         findViewById<RadioButton>(R.id.answerOption3).text = exercise.AnswerOptions3

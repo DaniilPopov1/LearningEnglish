@@ -1,4 +1,4 @@
-package com.example.learningenglish.Grammar
+package com.example.learningenglish.Listening
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -15,7 +15,7 @@ class ResultsActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_results)
+        setContentView(R.layout.activity_results3)
 
         val correctAnswers = intent.getIntExtra("correctAnswers", 0)
         val totalAnswers = intent.getIntExtra("totalAnswers", 0)
@@ -39,7 +39,7 @@ class ResultsActivity : AppCompatActivity() {
         val database = FirebaseDatabase.getInstance().reference
 
         if (userUID != null) {
-            val progressRef = database.child("progress").child(userUID).child("grammar").child(idLes.toString())
+            val progressRef = database.child("progress").child(userUID).child("listening").child(idLes.toString())
 
             progressRef.get().addOnSuccessListener { snapshot ->
                 val existingResult = snapshot.child("result").value as? String
@@ -84,7 +84,7 @@ class ResultsActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.finishButton).setOnClickListener {
-            val intent = Intent(this, ActivityGrammar::class.java)
+            val intent = Intent(this, ActivityListening::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
             finish()

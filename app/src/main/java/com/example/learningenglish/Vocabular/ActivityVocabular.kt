@@ -49,9 +49,6 @@ class ActivityVocabular : AppCompatActivity() {
                         lessonList.add(lesson)
                     }
                     (mRecyclerView.adapter as RVAdapter).notifyDataSetChanged()
-                    lessonList.forEach { user ->
-                        println("ID: ${user.LessonId}, Name: ${user.Theme}, Email: ${user.Title}")
-                    }
                 }
             }
         }

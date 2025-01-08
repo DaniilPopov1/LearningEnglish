@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.learningenglish.Av_Reg.ActivityRegAuth
 import com.example.learningenglish.Grammar.ActivityGrammar
+import com.example.learningenglish.Listening.ActivityListening
 import com.example.learningenglish.Vocabular.ActivityVocabular
 import com.google.firebase.auth.FirebaseAuth
 
@@ -39,6 +40,11 @@ class MainActivity : AppCompatActivity() {
         val ButVoc = findViewById<Button>(R.id.buttonLexicalLessons)
         ButVoc.setOnClickListener{
             val intent = Intent(this, ActivityVocabular::class.java)
+            startActivity(intent)
+        }
+        val ButLis = findViewById<Button>(R.id.buttonListeningLessons)
+        ButLis.setOnClickListener {
+            val intent = Intent(this, ActivityListening::class.java)
             startActivity(intent)
         }
         val ButClose = findViewById<Button>(R.id.buttonClose)

@@ -13,6 +13,15 @@
         android:theme="@style/Theme.LearningEnglish"
         tools:targetApi="31">
         <activity
+            android:name=".Listening.ActivityListeningExer"
+            android:exported="false" />
+        <activity
+            android:name=".Listening.ActivityListening"
+            android:exported="false" />
+        <activity
+            android:name=".Listening.ResultsActivity"
+            android:exported="false" />
+        <activity
             android:name=".Vocabular.ResultsActivity"
             android:exported="false" />
         <activity
