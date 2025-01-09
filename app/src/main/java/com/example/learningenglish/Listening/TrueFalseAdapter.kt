@@ -61,7 +61,6 @@ class TrueFalseHolder(private val view: View): RecyclerView.ViewHolder(view){
 
         val radioGroup = view.findViewById<RadioGroup>(R.id.true_false_group)
 
-        // Устанавливаем обработчик для изменения выбора
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedRadioButton = view.findViewById<RadioButton>(checkedId)
             val answerText = selectedRadioButton?.text.toString()

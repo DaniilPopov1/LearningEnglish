@@ -58,18 +58,16 @@ class ActivityListeningExer : AppCompatActivity(), TrueFalseAdapter.TrueFalseLis
 
         val idLes = intent.getIntExtra("lessonID", 0)
 
-        // Инициализация виджетов
         val topicTitle: TextView = findViewById(R.id.topic_title)
         playButton = findViewById(R.id.play_button)
         seekBar = findViewById(R.id.audio_seekbar)
         audioTimer = findViewById(R.id.audio_timer)
 
-        // Установка темы упражнения (получение из интента или базы данных)
         val topic = intent.getStringExtra("lessonTheme")
         topicTitle.text = topic
 
-        // Установка аудиофайла
-        val audioUrl = intent.getStringExtra("theoryLesson") // URL аудиофайла или локальный путь
+
+        val audioUrl = intent.getStringExtra("theoryLesson")
         if (audioUrl != null) {
             mediaPlayer = MediaPlayer().apply {
                 setDataSource(audioUrl)
@@ -246,29 +244,44 @@ class ActivityListeningExer : AppCompatActivity(), TrueFalseAdapter.TrueFalseLis
         val mAdapter1 = FillInTheBlankAdapter(exerciseList1, userUID!!,this)
         mRecyclerView1.adapter = mAdapter1
 
-        //totalQuestions1 = exerciseList.size
+        totalQuestions1 = exerciseList.size
 
     }
 
     override fun onAnswerSelected(correctCount: Int, totalQuestions: Int) {
-        // Здесь вы можете обновлять UI или сохранять данные
         this.correctAnswers = correctCount
         this.totalQuestions = totalQuestions
     }
 
     override fun onAnswerSelected1(correctCount: Int, totalQuestions: Int) {
-        // Здесь вы можете обновлять UI или сохранять данные
         this.correctAnswers1 = correctCount
         this.totalQuestions1 = totalQuestions
     }
 
     private fun showResults(idLes:Int) {
         if (exerciseList.size == (mRecyclerView.adapter as TrueFalseAdapter).userAnswers.size){
-            Toast.makeText(
-                this,
-                "Correct Answers: ${correctAnswers+correctAnswers1} / ${totalQuestions+totalQuestions1}",
-                Toast.LENGTH_LONG
-            ).show()
+            val sharedPreferences = getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+            val userUID = sharedPreferences.getString("userUID", null)
+
+            val database = FirebaseDatabase.getInstance()
+            val corA = database.getReference("users").child(userUID.toString()).child("correctAnswer").get()
+            corA.addOnSuccessListener { dataSnapshot ->
+                var corrAns = dataSnapshot.getValue(Int::class.java)
+                if (corrAns != null) {
+                    corrAns = corrAns + correctAnswers+ correctAnswers1
+                }
+                database.getReference("users").child(userUID.toString()).child("correctAnswer").setValue(corrAns)
+            }
+            val wrongA = database.getReference("users").child(userUID.toString()).child("wrongAnswer").get()
+            wrongA.addOnSuccessListener { dataSnapshot ->
+                var wrongAns = dataSnapshot.getValue(Int::class.java)
+                if (wrongAns != null) {
+                    wrongAns = wrongAns + (totalQuestions+totalQuestions1 - correctAnswers -
+                            correctAnswers1)
+                }
+                database.getReference("users").child(userUID.toString()).child("wrongAnswer").setValue(wrongAns)
+            }
+
             val intent = Intent(this, ResultsActivity::class.java)
             intent.putExtra("correctAnswers", correctAnswers+correctAnswers1)
             intent.putExtra("totalAnswers", totalQuestions+totalQuestions1)
@@ -309,7 +322,7 @@ class ActivityListeningExer : AppCompatActivity(), TrueFalseAdapter.TrueFalseLis
         if (::mediaPlayer.isInitialized) {
             mediaPlayer.release()
         }
-        handler.removeCallbacksAndMessages(null) // Удалить все запланированные обновления
+        handler.removeCallbacksAndMessages(null)
     }
 }
 
