@@ -46,12 +46,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp" />
 
-        <!-- Кнопка для показа результата -->
         <Button
             android:id="@+id/show_results_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Show Results"
+            android:text="Проверить"
             android:layout_marginTop="16dp"
             android:layout_gravity="center_horizontal" />
 
